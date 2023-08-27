@@ -1,2 +1,2 @@
-
- .util/
+# Ignore the backupand undo directories
+./.util/**
