@@ -10,14 +10,14 @@ fi
 install_nvim_from_source() {
 
     # Working directory
-    local WORKING_DIR=$(pwd)
+    WORKING_DIR=$(pwd)
     # Neovim config directory
-    local CONFIG_DIR=~/.config/nvim
+    CONFIG_DIR=~/.config/nvim
     # Neovim installation directory
-    local INSTALL_DIR=/opt/neovim
+    INSTALL_DIR=/opt/neovim
 
     # Necessary packages
-    local declare -a PACKAGES=(
+    declare -a PACKAGES=(
         gcc
         ninja-build
         gettext
@@ -53,7 +53,7 @@ install_nvim_from_source() {
     export PATH="$PATH:$INSTALL_DIR/neovim/bin"
 
     # Make sure it's working
-    local VERSION=$(nvim --version)
+    VERSION=$(nvim --version)
 
     if [[ $? -ne 0 ]]; then
         echo "Fatal: Neovim returned a non-zero exit status, exiting..."
@@ -70,8 +70,7 @@ install_neovim() {
     echo "Installing Neovim..."
 
     # URL to the latest Neovim AppImage
-    local NEOVIM_INSTALL_URL=\
-        "https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
+    NEOVIM_INSTALL_URL="https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
 
     # Download the appimage and make it executable
     curl -LO $NEOVIM_INSTALL_URL && chmod u+x nvim.appimage
