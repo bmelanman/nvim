@@ -9,8 +9,15 @@ fi
 
 install_nvim_from_source() {
 
+    # Working directory
+    local WORKING_DIR=$(pwd)
+    # Neovim config directory
+    local CONFIG_DIR=~/.config/nvim
+    # Neovim installation directory
+    local INSTALL_DIR=/opt/neovim
+
     # Necessary packages
-    declare -a PACKAGES=(
+    local declare -a PACKAGES=(
         gcc
         ninja-build
         gettext
@@ -21,24 +28,19 @@ install_nvim_from_source() {
 
     # Prompt
     echo "Installing the following packages: ${PACKAGES[@]}"
+
     # Install packages
     apt-get update >/dev/null && apt-get install -y ${PACKAGES[@]}
 
-    # Neovim config directory
-    CONFIG_DIR=~/.config/
-
     # If we're not in the config directory, move there
-    if [[ ! $(pwd) == "$CONFIG_DIR/nvim" ]]; then
+    if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
 
         # Make sure the config directory exists
         mkdir -p $CONFIG_DIR
 
         # Move everything to the config direcory
-        mv ../nvim $CONFIG_DIR
+        mv $WORKING_DIR $CONFIG_DIR/../
     fi
-
-    # Neovim installation directory
-    INSTALL_DIR=/opt/neovim
 
     # Grab the most recent stable release of Neovim
     git submodule update --init && git checkout stable
@@ -51,16 +53,61 @@ install_nvim_from_source() {
     export PATH="$PATH:$INSTALL_DIR/neovim/bin"
 
     # Make sure it's working
-    VERSION=$(nvim --version)
+    local VERSION=$(nvim --version)
 
     if [[ $? -ne 0 ]]; then
         echo "Fatal: Neovim returned a non-zero exit status, exiting..."
         exit 1
     else
+        echo "Neovim installed successfully!"
         echo $VERSION
     fi
 }
 
-# Begin
+install_neovim() {
+
+    # Try to install the easy way first
+    echo "Installing Neovim..."
+
+    # URL to the latest Neovim AppImage
+    local NEOVIM_INSTALL_URL=\
+        "https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
+
+    # Download the appimage and make it executable
+    curl -LO $NEOVIM_INSTALL_URL && chmod u+x nvim.appimage
+
+    # Get the full path to the appimage
+    NVIM_APPIMAGE=$(readlink -f ./nvim.appimage)
+
+    # Check if the appimage works
+    if [[ -x "$(command -v $NVIM_APPIMAGE)" ]]; then
+
+        # If it works, then move it to /usr/local/bin
+        mv $NVIM_APPIMAGE /usr/local/bin/nvim
+
+        # Done!
+        echo "Neovim installed successfully!"
+        return 0
+
+    else
+
+        # If it doesn't work, then delete it
+        rm $NVIM_APPIMAGE
+
+        # Install Neovim from source
+        install_nvim_from_source
+
+    fi
+
+}
+
+#################### Main ####################
 clear
 
+# Check if Neovim is already installed
+if [[ ! -x "$(command -v nvim)" ]]; then
+
+    # Install Neovim
+    install_neovim
+
+fi
