@@ -1,17 +1,17 @@
-
-require'nvim-treesitter.configs'.setup {
+require 'nvim-treesitter.configs'.setup {
 
     -- A list of parser names, or "all"
-    ensure_installed = { 
-        "c", 
+    ensure_installed = {
+        "bash",
+        "c",
         "cmake",
-        "cpp", 
-        "python", 
-        "lua", 
+        "cpp",
+        "python",
+        "lua",
         "json",
-        "make", 
-        "llvm", 
-        "vim", 
+        "make",
+        "llvm",
+        "vim",
     },
 
     -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -32,16 +32,16 @@ require'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
 
         -- Instead of true it can also be a list of languages
-        -- additional_vim_regex_highlighting = {"c", "cpp", "python", "lua"} 
+        -- additional_vim_regex_highlighting = {"c", "cpp", "python", "lua"}
     },
 
-    indent = { 
-        enable = true, 
-        disable = { 
-            'python' 
-        }, 
+    indent = {
+        enable = true,
+        disable = {
+            'python'
+        },
     },
-    
+
     incremental_selection = {
         enable = true,
         keymaps = {
@@ -53,7 +53,7 @@ require'nvim-treesitter.configs'.setup {
     },
 
     textobjects = {
-        
+
         select = {
             enable = true,
             lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
@@ -67,7 +67,7 @@ require'nvim-treesitter.configs'.setup {
                 ['ic'] = '@class.inner',
             },
         },
-        
+
         move = {
             enable = true,
             set_jumps = true, -- whether to set jumps in the jumplist
