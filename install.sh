@@ -9,11 +9,7 @@
 
 install_nvim_from_source() {
 
-    # Working directory
     WORKING_DIR=$(pwd)
-    # Neovim config directory
-    CONFIG_DIR=~/.config/nvim
-    # Neovim installation directory
     INSTALL_DIR=/opt/neovim
 
     # Necessary packages
@@ -30,7 +26,32 @@ install_nvim_from_source() {
     echo "Installing the following packages: ${PACKAGES[@]}"
 
     # Install packages
-    apt-get update >/dev/null && apt-get install -y ${PACKAGES[@]}
+    sudo apt-get update >/dev/null && sudo apt-get install -y ${PACKAGES[@]}
+
+    # Grab the most recent stable release of Neovim
+    git submodule update --init
+    cd neovim && git checkout stable
+
+    # Install Neovim!
+    make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR"
+    sudo make install
+
+    if [[ $? -ne 0 ]]; then
+        echo "Fatal: Make returned a non-zero exit status, exiting..."
+        exit 1
+    else
+
+        # Add Neovim to PATH
+        export PATH="$PATH:$INSTALL_DIR/neovim/bin"
+
+        # Done!
+        return 0
+    fi
+}
+
+install_neovim() {
+
+    CONFIG_DIR=~/.config/nvim
 
     # If we're not in the config directory, move there
     if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
@@ -41,30 +62,6 @@ install_nvim_from_source() {
         # Move everything to the config direcory
         mv $WORKING_DIR $CONFIG_DIR/../
     fi
-
-    # Grab the most recent stable release of Neovim
-    git submodule update --init && git checkout stable
-
-    # Install Neovim!
-    make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR"
-    make install
-
-    # Add Neovim to PATH
-    export PATH="$PATH:$INSTALL_DIR/neovim/bin"
-
-    # Make sure it's working
-    VERSION=$(nvim --version)
-
-    if [[ $? -ne 0 ]]; then
-        echo "Fatal: Neovim returned a non-zero exit status, exiting..."
-        exit 1
-    else
-        echo "Neovim installed successfully!"
-        echo $VERSION
-    fi
-}
-
-install_neovim() {
 
     # Try to install the easy way first
     echo "Installing Neovim..."
@@ -79,13 +76,13 @@ install_neovim() {
     NVIM_APPIMAGE=$(readlink -f ./nvim.appimage)
 
     # Check if the appimage works
-    if [[ -x "$(command -v $NVIM_APPIMAGE)" ]]; then
+    ./nvim.appimage --version
+    if [[ $? -ne 0 ]]; then
 
         # If it works, then move it to /usr/local/bin
-        mv $NVIM_APPIMAGE /usr/local/bin/nvim
+        sudo mv $NVIM_APPIMAGE /usr/local/bin/nvim
 
         # Done!
-        echo "Neovim installed successfully!"
         return 0
 
     else
@@ -95,6 +92,8 @@ install_neovim() {
 
         # Install Neovim from source
         install_nvim_from_source
+
+        return $? # Return the exit status of the function
 
     fi
 
@@ -108,5 +107,13 @@ if [[ ! -x "$(command -v nvim)" ]]; then
 
     # Install Neovim
     install_neovim
+
+    if [[ $? -ne 0 ]]; then
+        echo "Fatal: Neovim was not found and could not be installed, exiting..."
+        exit $?
+    else
+        echo "Neovim installed successfully!"
+        echo "$(nvim --version)"
+    fi
 
 fi
