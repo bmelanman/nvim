@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Make sure the script is run as root
-if [ "$EUID" -ne 0 ]; then
-    echo "Please run as root:"
-    echo "sudo $0"
-    exit 1
-fi
+# # Make sure the script is run as root
+# if [ "$EUID" -ne 0 ]; then
+#     echo "Please run as root:"
+#     echo "sudo $0"
+#     exit 1
+# fi
 
 install_nvim_from_source() {
 
