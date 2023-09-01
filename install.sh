@@ -51,18 +51,6 @@ install_nvim_from_source() {
 
 install_neovim() {
 
-    CONFIG_DIR=~/.config/nvim
-
-    # If we're not in the config directory, move there
-    if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
-
-        # Make sure the config directory exists
-        mkdir -p $CONFIG_DIR
-
-        # Move everything to the config direcory
-        mv $WORKING_DIR $CONFIG_DIR/../
-    fi
-
     # Try to install the easy way first
     echo "Installing Neovim..."
 
@@ -101,6 +89,17 @@ install_neovim() {
 
 #################### Main ####################
 clear
+
+CONFIG_DIR=~/.config/nvim
+
+# If we're not in the config directory, throw an error
+if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
+
+    # Prompt
+    echo "Fatal: Please run this script from the config directory:"
+    echo "cd $CONFIG_DIR"
+    exit 1
+fi
 
 # Check if Neovim is already installed
 if [[ ! -x "$(command -v nvim)" ]]; then
