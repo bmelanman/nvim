@@ -131,7 +131,8 @@ if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
 fi
 
 # Check if Neovim is already installed
-if [[ ! -x "$(command -v nvim)" ]]; then
+VERSION=$(nvim --version)
+if [[ $? -ne 0 ]]; then
 
     # Install Neovim
     install_neovim
@@ -141,7 +142,7 @@ if [[ ! -x "$(command -v nvim)" ]]; then
         exit $?
     else
         echo "Neovim installed successfully!"
-        echo "$(nvim --version)"
+        echo "$VERSION"
     fi
 
 fi
