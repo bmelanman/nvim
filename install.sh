@@ -181,7 +181,7 @@ gem install -q neovim && gem environment -q
 
 # Install neovim for npm
 npm install -q -g n
-n -q lts && n -q latest && hash -r
+n -q lts latest && hash -r
 npm install -q -g neovim tree-sitter
 
 # Install cpanm and neovim for perl
