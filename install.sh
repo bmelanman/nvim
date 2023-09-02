@@ -158,10 +158,14 @@ fi
 # Necessary packages for Neovim and plugins
 declare -a PACKAGES=(
     wget
+    golang
     cargo
     ruby
+    ruby-dev
     gem
     npm
+    default-jdk
+    default-jre
     luarocks
     python3
     python3-pip
@@ -170,7 +174,14 @@ declare -a PACKAGES=(
     perl
     ripgrep
     fd-find
+    xclip
 )
+
+# Get python3 version to install the correct python venv package
+PYTHON3_VERSION=$(python3 --version | sed -E 's/Python (.\...)\.../\1/;t')
+
+# Add the correct python venv package to the list of packages
+PACKAGES+=("python$PYTHON3_VERSION-venv")
 
 # Install packages
 install_packages ${PACKAGES[@]} && sudo apt-get autoremove -y
@@ -179,7 +190,7 @@ install_packages ${PACKAGES[@]} && sudo apt-get autoremove -y
 PYTHON3_EXE=$(which python3)
 sudo ln -s $PYTHON3_EXE /usr/local/bin/python3
 # Install pynvim
-$PYTHON3_EXE -m pip install -q pynvim
+$PYTHON3_EXE -m pip install -q -U pynvim jill
 
 # Install neovim for ruby
 gem install -q neovim && gem environment -q
@@ -187,7 +198,18 @@ gem install -q neovim && gem environment -q
 # Install neovim for npm
 npm install -q -g n
 n -q lts && n -q latest
-npm install -q -g neovim
+npm install -q -g neovim tree-sitter
 
 # Install cpanm and neovim for perl
-cpan App::cpanminus >/dev/null && cpanm Neovim::Ext >/dev/null
+cpan -i CPAN::DistnameInfo -i App::cpanminus >/dev/null && cpan -f -i Neovim::Ext >/dev/null
+
+# Run Julia install script
+printf 'y\n' | jill install
+
+# Run Neovim in headless mode to install plugins
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' && printf '\nPlugins installed successfully!\n'
+
+# TODO: Current issues with the following:
+# - tree-sitter
+# - clipboard
+# - clangd & lemminx report "Platform is unsupported"
