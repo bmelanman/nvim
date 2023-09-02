@@ -73,7 +73,7 @@ fi
 
 # Run the installer!
 if [[ $INSTALL_FLAG -eq 1 ]]; then
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "./install.sh"
+    docker exec -it "$CONTAINER_NAME" /bin/bash -c "$CONFIG_DIR/install.sh"
 fi
 
 # Enter the container after installation if desired
