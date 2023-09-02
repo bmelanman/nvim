@@ -9,7 +9,7 @@ INSTALL_FLAG=0
 # Flag for entering the container after installation
 ENTER_FLAG=0
 # Neovim config directory
-CONFIG_DIR=~/.config/nvim
+CONFIG_DIR=home/root/.config/nvim
 
 # User input
 for i in "$@"; do
@@ -21,6 +21,7 @@ for i in "$@"; do
         echo "-h, --help      Show this help message"
         echo "-i, --install   Run the install script"
         echo "-e, --enter     Enter the container after installation"
+        echo "-r, --remove    Remove the test environment container"
         echo ""
         exit 0
         ;;
@@ -32,25 +33,31 @@ for i in "$@"; do
         ENTER_FLAG=1
         shift
         ;;
+    -r | --remove)
+        docker rm -f $CONTAINER_NAME
+        shift
+        ;;
     esac
 done
-
-# Remove all containers
-docker rm -f $(docker ps -aq)
 
 # Create a new container names "test"
 docker run -td --name=$CONTAINER_NAME ubuntu:latest
 
 # Update and install git
-docker exec -it $CONTAINER_NAME /bin/bash -c 'apt-get update -q && apt-get install -y git -q'
+docker exec -it $CONTAINER_NAME /bin/bash -c "apt-get update -q && apt-get install -y git -q"
+
+# Create the config directory
+docker exec -it $CONTAINER_NAME /bin/bash -c "mkdir -p $CONFIG_DIR && cd $CONFIG_DIR"
 
 # Clone the nvim repo
-docker exec -it $CONTAINER_NAME /bin/bash -c 'git clone https://github.com/bmelanman/nvim.git $CONFIG_DIR && cd $CONFIG_DIR'
+docker exec -it $CONTAINER_NAME /bin/bash -c "git clone https://github.com/bmelanman/nvim.git $CONFIG_DIR"
 
 # Run the installer!
-docker exec -it $CONTAINER_NAME /bin/bash -c './install.sh'
+if [[ $INSTALL_FLAG -eq 1 ]]; then
+    docker exec -it $CONTAINER_NAME /bin/bash -c "./install.sh"
+fi
 
 # Enter the container after installation if desired
 if [[ $ENTER_FLAG -eq 1 ]]; then
-    docker exec -it $CONTAINER_NAME /bin/bash
+    docker exec -it $CONTAINER_NAME --user "$USER" /bin/bash
 fi
