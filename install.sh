@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # # Make sure the script is run as root
 # if [ "$EUID" -ne 0 ]; then
