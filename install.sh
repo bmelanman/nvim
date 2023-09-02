@@ -18,7 +18,6 @@ install_nvim_from_source() {
         gettext
         cmake
         unzip
-        curl
     )
 
     # Prompt
@@ -49,6 +48,17 @@ install_nvim_from_source() {
 }
 
 install_neovim() {
+
+    # Necessary packages
+    declare -a PACKAGES=(
+        curl
+    )
+
+    # Prompt
+    echo "Installing the following packages: ${PACKAGES[@]}"
+
+    # Install packages
+    sudo apt-get update >/dev/null && sudo apt-get install -y ${PACKAGES[@]}
 
     # Try to install the easy way first
     echo "Installing Neovim..."
