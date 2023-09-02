@@ -75,13 +75,15 @@ if [[ $RESET_FLAG -eq 1 ]]; then
         "alias la='ls -laFh'"
         "alias go='cd $CONFIG_DIR'"
         "cd /root/"
-        "force_color_prompt=yes"
     )
 
     # Add the commands to the bashrc
     for i in "${COMMANDS[@]}"; do
         docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"$i\" | tee -a /root/.bashrc"
     done
+
+    # Enable colors in the terminal
+    docker exec -it "$CONTAINER_NAME" /bin/bash -c "sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/g' /root/.bashrc"
 
 else
 
