@@ -188,6 +188,7 @@ cpan -i CPAN::DistnameInfo -i App::cpanminus >/dev/null && cpan -f -i Neovim::Ex
 printf 'y\n' | jill install
 
 # Run Neovim in headless mode to install plugins
+echo "Installing Neovim plugins..."
 nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' && echo ''
 
 # Check if the installation was successful
