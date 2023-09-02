@@ -9,7 +9,6 @@
 
 install_nvim_from_source() {
 
-    WORKING_DIR=$(pwd)
     INSTALL_DIR=/opt/neovim
 
     # Necessary packages
@@ -104,6 +103,7 @@ for i in "$@"; do
     esac
 done
 
+WORKING_DIR=$(pwd)
 CONFIG_DIR=~/.config/nvim
 
 # If we're not in the config directory, throw an error
