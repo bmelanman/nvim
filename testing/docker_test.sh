@@ -49,8 +49,13 @@ clear
 # Remove the container if desired
 if [[ $RESET_FLAG -eq 1 ]]; then
 
-    # Remove all containers
-    docker rm -f $(docker ps -aq)
+    # Get a list of all containers
+    CONTAINERS=$(docker ps -a -q)
+
+    # If the container exists, then remove it
+    if [[ $CONTAINERS == *"$CONTAINER_NAME"* ]]; then
+        docker rm -f "$CONTAINER_NAME" >/dev/null
+    fi
 
     # Create a new container names "test"
     docker run -td --name="$CONTAINER_NAME" ubuntu:latest
@@ -79,7 +84,7 @@ fi
 
 # Run the installer!
 if [[ $INSTALL_FLAG -eq 1 ]]; then
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "$CONFIG_DIR/install.sh"
+    docker exec -it "$CONTAINER_NAME" /bin/bash -c "cd $CONFIG_DIR && ./install.sh"
 fi
 
 # Enter the container after installation if desired
