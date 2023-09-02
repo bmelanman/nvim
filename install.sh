@@ -74,7 +74,7 @@ install_neovim() {
 
     # Check if the appimage works
     ./nvim.appimage --version
-    if [[ $? -ne 0 ]]; then
+    if [[ $? -eq 0 ]]; then
 
         # If it works, then move it to /usr/local/bin
         sudo mv $NVIM_APPIMAGE /usr/local/bin/nvim
@@ -135,7 +135,7 @@ if [[ ! -x "$(command -v nvim)" ]]; then
         echo "Fatal: Neovim was not found and could not be installed, exiting..."
         exit $?
     else
-        echo "Neovim installed successfully! "
+        echo "Neovim installed successfully!"
         echo "$(nvim --version)"
     fi
 
