@@ -87,7 +87,6 @@ install_neovim() {
 }
 
 #################### Script Start ####################
-clear
 
 # Parse input flags
 for i in "$@"; do
@@ -113,23 +112,6 @@ if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
     echo "Fatal: Please run this script from the config directory:"
     echo "cd $CONFIG_DIR"
     exit 1
-fi
-
-# Check if Neovim is already installed
-VERSION=$(nvim --version)
-if [[ $? -ne 0 ]]; then
-
-    # Install Neovim
-    install_neovim
-
-    if [[ $? -ne 0 ]]; then
-        echo "Fatal: Neovim was not found and could not be installed, exiting..."
-        exit $?
-    else
-        echo "Neovim installed successfully!"
-        echo "$VERSION"
-    fi
-
 fi
 
 # Necessary packages for Neovim and plugins
@@ -166,6 +148,22 @@ echo "Installing the following packages: ${PACKAGES[@]}"
 # Install packages
 sudo apt-get update >/dev/null
 apt-install ${PACKAGES[@]} && sudo apt-get autoremove -y
+
+# Check if Neovim is already installed
+if [[ ! $(which nvim) ]]; then
+
+    # Install Neovim
+    install_neovim
+
+    if [[ $? -ne 0 ]]; then
+        echo "Fatal: Neovim was not found and could not be installed, exiting..."
+        exit $?
+    else
+        echo "Neovim installed successfully!"
+        echo "$(nvim --version)"
+    fi
+
+fi
 
 # Get python3 version to install the correct python venv package
 PYTHON3_VENV=$(python3 --version | sed -E 's/Python (.\...)\.../python\1-venv/;t')
