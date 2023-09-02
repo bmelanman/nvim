@@ -17,6 +17,14 @@ install_packages() {
 
 }
 
+error_exit() {
+
+    # Error message
+    echo "Fatal: !! retunred exit status $?, exiting..."
+
+    exit 1
+}
+
 install_nvim_from_source() {
 
     INSTALL_DIR=/opt/neovim
@@ -34,12 +42,12 @@ install_nvim_from_source() {
     install_packages ${PACKAGES[@]}
 
     # Grab the most recent stable release of Neovim
-    git submodule update --init
+    git submodule update --init || error_exit
     cd neovim && git checkout stable
 
     # Install Neovim!
-    make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR"
-    sudo make install
+    make --silent CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR"
+    sudo make --silent install
 
     if [[ $? -eq 0 ]]; then
 
@@ -177,6 +185,8 @@ $PYTHON3_EXE -m pip install -q pynvim
 gem install -q neovim && gem environment -q
 
 # Install neovim for npm
+npm install -q -g n
+n -q lts && n -q latest
 npm install -q -g neovim
 
 # Install cpanm and neovim for perl

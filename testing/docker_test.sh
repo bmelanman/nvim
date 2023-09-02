@@ -69,6 +69,11 @@ if [[ $RESET_FLAG -eq 1 ]]; then
     docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"alias la='ls -laFh'\" | tee -a /root/.bashrc"
     docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"alias go='cd $CONFIG_DIR'\" | tee -a /root/.bashrc"
 
+else
+
+    # Start the container
+    docker start "$CONTAINER_NAME"
+
 fi
 
 # Run the installer!
