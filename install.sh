@@ -173,11 +173,13 @@ PYTHON3_VENV=$(python3 --version | sed -E 's/Python (.\...)\.../python\1-venv/;t
 # Install python3.*-venv
 echo "Installing $PYTHON3_VENV..." && apt-install -y $PYTHON3_VENV
 
-# Create a symlink for python3
-PYTHON3_EXE=$(which python3)
-sudo ln -s $PYTHON3_EXE /usr/local/bin/python3
+# Create a symlink for python3 (or don't if it already exists)
+if [[ ! -f /usr/local/bin/python3 ]]; then
+    sudo ln -s $(which python3) /usr/local/bin/python3
+fi
+
 # Install pynvim
-$PYTHON3_EXE -m pip install -q -U pynvim jill
+python3 -m pip install -q -U pynvim jill
 
 # Install neovim for ruby
 gem install -q neovim && gem environment -q
