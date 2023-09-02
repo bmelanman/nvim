@@ -91,5 +91,3 @@ fi
 if [[ $ENTER_FLAG -eq 1 ]]; then
     docker exec -it "$CONTAINER_NAME" /bin/bash
 fi
-
-docker: Error response from daemon: Conflict. The container name "/test" is already in use by container "c201a4d2c9bf627ccb1b412370893cc9b74ae8cbeb6ca3233fe59d50f7545e16". You have to remove (or rename) that container to be able to reuse that name.
