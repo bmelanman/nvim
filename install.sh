@@ -87,8 +87,22 @@ install_neovim() {
 
 }
 
-#################### Main ####################
+#################### Script Start ####################
 clear
+
+# Parse input flags
+for i in "$@"; do
+    case $i in
+    -h | --help)
+        echo "Usage: $0 [options]"
+        echo ""
+        echo "Options:"
+        echo "-h, --help      Show this help message"
+        echo ""
+        exit 0
+        ;;
+    esac
+done
 
 CONFIG_DIR=~/.config/nvim
 
