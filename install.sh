@@ -178,7 +178,7 @@ gem install -q neovim && gem environment -q
 
 # Install neovim for npm
 npm install -q -g n
-n -q lts && n -q latest
+n -q lts && n -q latest && hash -r
 npm install -q -g neovim tree-sitter
 
 # Install cpanm and neovim for perl
@@ -188,7 +188,15 @@ cpan -i CPAN::DistnameInfo -i App::cpanminus >/dev/null && cpan -f -i Neovim::Ex
 printf 'y\n' | jill install
 
 # Run Neovim in headless mode to install plugins
-nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' && printf '\nPlugins installed successfully!\n'
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' && echo ''
+
+# Check if the installation was successful
+if [[ $? -eq 0 ]]; then
+    echo "Neovim plugins installed successfully!"
+else
+    echo "Fatal: Neovim plugins were not installed successfully, exiting..."
+    exit 1
+fi
 
 # TODO: Current issues with the following:
 # - tree-sitter
