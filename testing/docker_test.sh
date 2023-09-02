@@ -70,10 +70,18 @@ if [[ $RESET_FLAG -eq 1 ]]; then
     docker exec -it "$CONTAINER_NAME" /bin/bash -c "git clone https://github.com/bmelanman/nvim.git $CONFIG_DIR"
 
     # Import come convenience commands
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"alias rewq='clear'\" | tee -a /root/.bashrc"
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"alias la='ls -laFh'\" | tee -a /root/.bashrc"
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"alias go='cd $CONFIG_DIR'\" | tee -a /root/.bashrc"
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"cd /root/\" | tee -a /root/.bashrc"
+    declare -a COMMANDS=(
+        "alias rewq='clear'"
+        "alias la='ls -laFh'"
+        "alias go='cd $CONFIG_DIR'"
+        "cd /root/"
+        "force_color_prompt=yes"
+    )
+
+    # Add the commands to the bashrc
+    for i in "${COMMANDS[@]}"; do
+        docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"$i\" | tee -a /root/.bashrc"
+    done
 
 else
 
