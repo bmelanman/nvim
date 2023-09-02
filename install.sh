@@ -185,7 +185,7 @@ n -q lts && n -q latest && hash -r
 npm install -q -g neovim tree-sitter
 
 # Install cpanm and neovim for perl
-cpan -i CPAN::DistnameInfo -i App::cpanminus && cpan -f -i Neovim::Ext
+yes | cpan -i CPAN::DistnameInfo && cpan -f -i Neovim::Ext
 
 # Run Julia install script
 printf 'y\n' | jill install
