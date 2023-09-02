@@ -61,7 +61,7 @@ if [[ $RESET_FLAG -eq 1 ]]; then
     docker run -td --name="$CONTAINER_NAME" ubuntu:latest
 
     # Update and install git
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "apt-get update -q && apt-get install -y git sudo -q"
+    docker exec -it "$CONTAINER_NAME" /bin/bash -c "apt-get update -q && apt-get install -q -y git sudo"
 
     # Create the config directory
     docker exec -it "$CONTAINER_NAME" /bin/bash -c "mkdir -p $CONFIG_DIR && cd $CONFIG_DIR"

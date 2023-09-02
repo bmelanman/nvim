@@ -7,12 +7,10 @@
 #     exit 1
 # fi
 
-alias apt-install='sudo apt-get install -y'
-
 error_exit() {
 
     # Error message
-    echo "Fatal: u!! retunred exit status $?, exiting..."
+    echo "Fatal: !! retunred exit status $?, exiting..."
 
     exit 1
 }
@@ -107,11 +105,7 @@ CONFIG_DIR=~/.config/nvim
 
 # If we're not in the config directory, throw an error
 if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
-
-    # Prompt
-    echo "Fatal: Please run this script from the config directory:"
-    echo "cd $CONFIG_DIR"
-    exit 1
+    cd $CONFIG_DIR || error_exit
 fi
 
 # Necessary packages for Neovim and plugins
@@ -147,7 +141,7 @@ echo "Installing the following packages: ${PACKAGES[@]}"
 
 # Install packages
 sudo apt-get update >/dev/null
-apt-install ${PACKAGES[@]} && sudo apt-get autoremove -y
+sudo apt-get install -y ${PACKAGES[@]} && sudo apt-get autoremove -y
 
 # Check if Neovim is already installed
 if [[ ! $(which nvim) ]]; then
@@ -169,7 +163,7 @@ fi
 PYTHON3_VENV=$(python3 --version | sed -E 's/Python (.\...)\.../python\1-venv/;t')
 
 # Install python3.*-venv
-echo "Installing $PYTHON3_VENV..." && apt-install -y $PYTHON3_VENV
+echo "Installing $PYTHON3_VENV..." && sudo apt-get install -y $PYTHON3_VENV
 
 # Create a symlink for python3 (or don't if it already exists)
 if [[ ! -f /usr/local/bin/python3 ]]; then
