@@ -108,8 +108,10 @@ if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
     cd $CONFIG_DIR || error_exit
 fi
 
-# Install tzdata and automatically configure it
-RUN DEBIAN_FRONTEND=noninteractive TZ=$(cat /etc/timezone) apt-get -y install tzdata
+# Install tzdata and automatically configure it if necessary
+if [[ ! -f /etc/timezone ]]; then
+    DEBIAN_FRONTEND=noninteractive TZ="Etc/UTC" apt-get -y install tzdata
+fi
 
 # Necessary packages for Neovim and plugins
 declare -a PACKAGES=(
