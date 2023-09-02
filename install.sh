@@ -135,7 +135,7 @@ if [[ ! -x "$(command -v nvim)" ]]; then
         echo "Fatal: Neovim was not found and could not be installed, exiting..."
         exit $?
     else
-        echo "Neovim installed successfully!"
+        echo "Neovim installed successfully! "
         echo "$(nvim --version)"
     fi
 
