@@ -7,6 +7,16 @@
 #     exit 1
 # fi
 
+install_packages() {
+
+    # Prompt
+    echo "Installing the following packages: $@"
+
+    # Install packages
+    sudo apt-get update >/dev/null && sudo apt-get install -y $@
+
+}
+
 install_nvim_from_source() {
 
     INSTALL_DIR=/opt/neovim
@@ -20,11 +30,8 @@ install_nvim_from_source() {
         unzip
     )
 
-    # Prompt
-    echo "Installing the following packages: ${PACKAGES[@]}"
-
     # Install packages
-    sudo apt-get update >/dev/null && sudo apt-get install -y ${PACKAGES[@]}
+    install_packages ${PACKAGES[@]}
 
     # Grab the most recent stable release of Neovim
     git submodule update --init
@@ -34,34 +41,29 @@ install_nvim_from_source() {
     make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR"
     sudo make install
 
-    if [[ $? -ne 0 ]]; then
-        echo "Fatal: Make returned a non-zero exit status, exiting..."
-        exit 1
-    else
+    if [[ $? -eq 0 ]]; then
 
-        # Add Neovim to PATH
-        export PATH="$PATH:$INSTALL_DIR/neovim/bin"
+        # Make a symlink to the executable
+        sudo ln -s $INSTALL_DIR/bin/nvim /usr/local/bin/nvim
 
         # Done!
         return 0
+    else
+
+        # Error message
+        echo "Fatal: Make returned a non-zero exit status, exiting..."
+
+        exit 1
     fi
 }
 
 install_neovim() {
 
-    # Necessary packages
-    declare -a PACKAGES=(
-        curl
-    )
-
-    # Prompt
-    echo "Installing the following packages: ${PACKAGES[@]}"
-
-    # Install packages
-    sudo apt-get update >/dev/null && sudo apt-get install -y ${PACKAGES[@]}
+    # Install necessary packages
+    install_packages curl
 
     # Try to install the easy way first
-    echo "Installing Neovim..."
+    echo "Installing Neovim via AppImage..."
 
     # URL to the latest Neovim AppImage
     NEOVIM_INSTALL_URL="https://github.com/neovim/neovim/releases/latest/download/nvim.appimage"
@@ -86,6 +88,9 @@ install_neovim() {
 
         # If it doesn't work, then delete it
         rm $NVIM_APPIMAGE
+
+        # Prompt
+        echo "AppImage is incompatible, installing Neovim from source..."
 
         # Install Neovim from source
         install_nvim_from_source
@@ -140,3 +145,38 @@ if [[ ! -x "$(command -v nvim)" ]]; then
     fi
 
 fi
+
+# Necessary packages for Neovim and plugins
+declare -a PACKAGES=(
+    wget
+    cargo
+    ruby
+    gem
+    npm
+    luarocks
+    python3
+    python3-pip
+    php
+    composer
+    perl
+    ripgrep
+    fd-find
+)
+
+# Install packages
+install_packages ${PACKAGES[@]} && sudo apt-get autoremove -y
+
+# Create a symlink for python3
+PYTHON3_EXE=$(which python3)
+sudo ln -s $PYTHON3_EXE /usr/local/bin/python3
+# Install pynvim
+$PYTHON3_EXE -m pip install -q pynvim
+
+# Install neovim for ruby
+gem install -q neovim && gem environment -q
+
+# Install neovim for npm
+npm install -q -g neovim
+
+# Install cpanm and neovim for perl
+cpan -q App::cpanminus && cpan -q Neovim::Ext
