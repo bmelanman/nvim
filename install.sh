@@ -7,15 +7,7 @@
 #     exit 1
 # fi
 
-install_packages() {
-
-    # Prompt
-    echo "Installing the following packages: $@"
-
-    # Install packages
-    sudo apt-get update >/dev/null && sudo apt-get install -y $@
-
-}
+alias apt-install='sudo apt-get install -y'
 
 error_exit() {
 
@@ -28,18 +20,6 @@ error_exit() {
 install_nvim_from_source() {
 
     INSTALL_DIR=/opt/neovim
-
-    # Necessary packages
-    declare -a PACKAGES=(
-        gcc
-        ninja-build
-        gettext
-        cmake
-        unzip
-    )
-
-    # Install packages
-    install_packages ${PACKAGES[@]}
 
     # Grab the most recent stable release of Neovim
     git submodule update --init || error_exit
@@ -66,9 +46,6 @@ install_nvim_from_source() {
 }
 
 install_neovim() {
-
-    # Install necessary packages
-    install_packages curl
 
     # Try to install the easy way first
     echo "Installing Neovim via AppImage..."
@@ -158,6 +135,12 @@ fi
 # Necessary packages for Neovim and plugins
 declare -a PACKAGES=(
     wget
+    curl
+    gcc
+    ninja-build
+    gettext
+    cmake
+    unzip
     golang
     cargo
     ruby
@@ -177,14 +160,18 @@ declare -a PACKAGES=(
     xclip
 )
 
-# Get python3 version to install the correct python venv package
-PYTHON3_VERSION=$(python3 --version | sed -E 's/Python (.\...)\.../\1/;t')
-
-# Add the correct python venv package to the list of packages
-PACKAGES+=("python$PYTHON3_VERSION-venv")
+# Prompt
+echo "Installing the following packages: ${PACKAGES[@]}"
 
 # Install packages
-install_packages ${PACKAGES[@]} && sudo apt-get autoremove -y
+sudo apt-get update >/dev/null
+apt-install ${PACKAGES[@]} && sudo apt-get autoremove -y
+
+# Get python3 version to install the correct python venv package
+PYTHON3_VENV=$(python3 --version | sed -E 's/Python (.\...)\.../python\1-venv/;t')
+
+# Install python3.*-venv
+echo "Installing $PYTHON3_VENV..." && apt-install -y $PYTHON3_VENV
 
 # Create a symlink for python3
 PYTHON3_EXE=$(which python3)
