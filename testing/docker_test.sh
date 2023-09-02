@@ -72,7 +72,7 @@ if [[ $RESET_FLAG -eq 1 ]]; then
 else
 
     # Start the container
-    docker start "$CONTAINER_NAME"
+    docker start "$CONTAINER_NAME" >/dev/null
 
 fi
 

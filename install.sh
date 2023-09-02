@@ -20,7 +20,7 @@ install_packages() {
 error_exit() {
 
     # Error message
-    echo "Fatal: !! retunred exit status $?, exiting..."
+    echo "Fatal: u!! retunred exit status $?, exiting..."
 
     exit 1
 }
@@ -190,4 +190,4 @@ n -q lts && n -q latest
 npm install -q -g neovim
 
 # Install cpanm and neovim for perl
-cpan -q App::cpanminus && cpan -q Neovim::Ext
+cpan App::cpanminus >/dev/null && cpanm Neovim::Ext >/dev/null
