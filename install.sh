@@ -108,6 +108,9 @@ if [[ ! "$WORKING_DIR" == "$CONFIG_DIR" ]]; then
     cd $CONFIG_DIR || error_exit
 fi
 
+# Install tzdata and automatically configure it
+RUN DEBIAN_FRONTEND=noninteractive TZ=$(cat /etc/timezone) apt-get -y install tzdata
+
 # Necessary packages for Neovim and plugins
 declare -a PACKAGES=(
     wget
@@ -182,7 +185,7 @@ n -q lts && n -q latest && hash -r
 npm install -q -g neovim tree-sitter
 
 # Install cpanm and neovim for perl
-cpan -i CPAN::DistnameInfo -i App::cpanminus >/dev/null && cpan -f -i Neovim::Ext >/dev/null
+cpan -i CPAN::DistnameInfo -i App::cpanminus && cpan -f -i Neovim::Ext
 
 # Run Julia install script
 printf 'y\n' | jill install
