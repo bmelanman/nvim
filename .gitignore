@@ -1,3 +1,4 @@
 # Ignore the backupand undo directories
 /.util/
 /.idea/
+/plugin/
