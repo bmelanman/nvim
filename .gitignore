@@ -1,4 +1,5 @@
 # Ignore the backupand undo directories
 /.util/
 /.idea/
+/.vscode/
 /plugin/
