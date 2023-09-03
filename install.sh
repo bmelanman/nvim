@@ -184,17 +184,18 @@ gem install -q neovim && gem environment -q
 # Install neovim for npm
 npm install -q -g n
 n -q lts latest && hash -r
-npm install -q -g neovim tree-sitter-clin
+npm install -q -g neovim tree-sitter-cli n
 
 # Install cpanm and neovim for perl
-yes | cpan -i CPAN::DistnameInfo -i MApp::cpanminus && cpan -f -i Neovim::Ext
+yes | cpan -i CPAN::DistnameInfo -i App::cpanminus && cpan -f -i Neovim::Ext
 
 # Run Julia install script
 printf 'y\n' | jill install
 
 # Run Neovim in headless mode to install plugins
 echo "Installing Neovim plugins..."
-nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+nvim --headless -c 'autocmd User PackerComplete quitall'
+nvim --headless -c 'PackerSync'
 echo ''
 
 # Check if the installation was successful
