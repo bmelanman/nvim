@@ -184,17 +184,18 @@ gem install -q neovim && gem environment -q
 # Install neovim for npm
 npm install -q -g n
 n -q lts latest && hash -r
-npm install -q -g neovim tree-sitter
+npm install -q -g neovim tree-sitter-clin
 
 # Install cpanm and neovim for perl
-yes | cpan -i CPAN::DistnameInfo && cpan -f -i Neovim::Ext
+yes | cpan -i CPAN::DistnameInfo -i MApp::cpanminus && cpan -f -i Neovim::Ext
 
 # Run Julia install script
 printf 'y\n' | jill install
 
 # Run Neovim in headless mode to install plugins
 echo "Installing Neovim plugins..."
-nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' && echo ''
+nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+echo ''
 
 # Check if the installation was successful
 if [[ $? -eq 0 ]]; then
@@ -205,6 +206,5 @@ else
 fi
 
 # TODO: Current issues with the following:
-# - tree-sitter
 # - clipboard
 # - clangd & lemminx report "Platform is unsupported"

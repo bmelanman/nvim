@@ -60,6 +60,9 @@ if [[ $RESET_FLAG -eq 1 ]]; then
     # Create a new container names "test"
     docker run -td --name="$CONTAINER_NAME" ubuntu:latest
 
+    # Enable colors in the terminal
+    docker exec -it "$CONTAINER_NAME" /bin/bash -c "sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/g' /root/.bashrc"
+
     # Update and install git
     docker exec -it "$CONTAINER_NAME" /bin/bash -c "apt-get update -q && apt-get install -q -y git sudo"
 
@@ -81,10 +84,6 @@ if [[ $RESET_FLAG -eq 1 ]]; then
     for i in "${COMMANDS[@]}"; do
         docker exec -it "$CONTAINER_NAME" /bin/bash -c "echo \"$i\" | tee -a /root/.bashrc"
     done
-
-    # Enable colors in the terminal
-    docker exec -it "$CONTAINER_NAME" /bin/bash -c "sed -i 's/#force_color_prompt=yes/force_color_prompt=yes/g' /root/.bashrc"
-
 else
 
     # Start the container
